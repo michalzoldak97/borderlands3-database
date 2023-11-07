@@ -58,11 +58,15 @@ def _extract_attr(field: str) -> dict:
     return res
 
 
-def _extract_weapon_data():
-    with open('./data/preview.txt') as data_file:
+def _extract_weapon_data() -> int:
+    cnt = 0
+    with open('data/weapons-processed.txt') as data_file:
         for line in data_file.readlines():
             if line != None:
+                cnt += 1
                 print(_extract_attr(line))
+    
+    return cnt
 
 
 def _improve_readability(f_pth: str):
@@ -75,7 +79,7 @@ def _improve_readability(f_pth: str):
         .replace('<div class="db_item-data', '\n<div class="db_item-data')
         )
     
-    with open('./data/weapons-processed.txt', 'w') as p:
+    with open('data/weapons-processed.txt', 'w') as p:
         p.write(file)
 
 
@@ -93,7 +97,7 @@ def main():
     # _load_raw_html('https://www.lootlemon.com/db/borderlands-3/weapons?3493d0c0_page=4',
     #                './data/weapons-source.txt')
     #_improve_readability('./data/weapons-source.txt')
-    print(_extract_weapon_data())
+    print("dataset contains {} weapons".format(_extract_weapon_data()))
 
 
 if __name__ == "__main__":
