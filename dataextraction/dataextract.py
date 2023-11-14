@@ -55,7 +55,6 @@ class HTMLDataExtractor(abc.ABC):
         print("File data consists of {} lines".format(len(f_data)))
 
 
-
 def _get_readable_list(all_fields: list) -> list:
     for i, f in enumerate(all_fields):
         if len(f) < 1:
