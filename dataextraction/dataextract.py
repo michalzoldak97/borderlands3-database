@@ -62,9 +62,13 @@ class HTMLDataExtractor():
 
         return data_fields
 
-    def get_df(self, cols: int) -> pd.DataFrame:
+    def get_df(self, start_idx: int, stop_idx: int) -> pd.DataFrame:
         df = pd.DataFrame.from_records(self.extract_file_data())
-        return df[df.columns[:cols]]
+
+        if stop_idx == 0:
+            return df[df.columns[start_idx:]]
+
+        return df[df.columns[start_idx:stop_idx]]
     
     def print_file_data(self):
         f_data = self.extract_file_data()
