@@ -1,20 +1,39 @@
-import abc
 import pandas as pd
 
 
-class HTMLDataExtractor(abc.ABC):
+class HTMLDataExtractor():
     EX_ELEMENTS = ["nonelemental", "incindiary", "shock", "corrosive", "cryo", "radiation"]
 
     def __init__(self, raw_source_txt_pth: str):
         self.raw_source_txt_pth = raw_source_txt_pth
 
-    @abc.abstractmethod
+    def _extract_elements_data(self, chunk: list) -> dict:
+        elements = []
+        for i, c in enumerate(chunk):
+            if c[-3:] == 'svg' and any([el in c for el in self.EX_ELEMENTS]):
+                if 'invisible' in chunk[i + 10]:
+                    continue
+
+                el = c.split('_')[1][:-4]
+                elements.append(el)
+
+        if len(elements) < 1:
+            return {}
+
+        return {"name": "elements", "data": elements}
+
     def _extract_attr_data(self, attr_text: str) -> dict:
-        """
-        extracts data for a single data attribute
-        :param attr_text:
-        :return: dictionary with attribute name and value
-        """
+        f = attr_text.split('"')
+        if len(f) > 3:
+            el_data = self._extract_elements_data(f)
+            if el_data:
+                return el_data
+            return {}
+
+        if len(f) < 2 or len(f[1]) < 1:
+            return {}
+
+        return {"name": f[0][1:-1], "data": f[1]}
 
     def _extract_attr(self, field: str) -> dict:
         field_data_split = _get_readable_list(field.lower().split('data'))
@@ -43,9 +62,9 @@ class HTMLDataExtractor(abc.ABC):
 
         return data_fields
 
-    def get_df(self) -> pd.DataFrame:
+    def get_df(self, cols: int) -> pd.DataFrame:
         df = pd.DataFrame.from_records(self.extract_file_data())
-        return df[df.columns[:-4]]
+        return df[df.columns[:cols]]
     
     def print_file_data(self):
         f_data = self.extract_file_data()

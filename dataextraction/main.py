@@ -1,6 +1,5 @@
 import dataload as dl
-import weapon_dataextract as wd
-import shield_dataextract as sd
+import dataextract as dex
 import analysis
 
 
@@ -9,8 +8,9 @@ def main():
     #                './data/shields-source.txt')
     # wd_ex = wd.WeaponDataExtractor('./data/weapons-source.txt')
     # analysis.analyze_w_df_inc(wd_ex.get_df())
-    sd_ex = sd.ShieldDataExtractor('data/shields-source.txt')
-    sd_ex.print_file_data()
+    ex = dex.HTMLDataExtractor('data/shields-source.txt')
+    print(ex.print_file_data())
+    print(ex.get_df(-1).columns)
 
 
 if __name__ == "__main__":
